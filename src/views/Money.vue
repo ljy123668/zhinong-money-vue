@@ -1,8 +1,7 @@
 <template>
-    <div>
+    <Layout>
         money
-        <Nav />
-    </div>
+    </Layout>
 </template>
 
 <script>
@@ -10,7 +9,3 @@
         
     }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

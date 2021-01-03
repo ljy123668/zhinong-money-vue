@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <Layout>
         lables
-        <Nav />
-    </div>
+    </Layout>
+ 
 </template>
 
 <script>
@@ -10,7 +10,3 @@
         
     }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
