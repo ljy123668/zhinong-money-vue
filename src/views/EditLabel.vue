@@ -1,12 +1,22 @@
 <template>
-  <Layout> 编辑标签 </Layout>
+  <Layout>
+    <div>
+      <Icon name="left" />
+      <span>编辑标签</span>
+    </div>
+    <FormItem field-name="标签名" placeholder="标签名标签名" />
+  </Layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import tagListModel from "@/models/tagListModel.ts";
-@Component
+import FormItem from "../components/money/FormItem.vue";
+
+@Component({
+  components: { FormItem },
+})
 export default class EditLabel extends Vue {
   created() {
     const id = this.$route.params.id;
@@ -15,7 +25,6 @@ export default class EditLabel extends Vue {
     const tag = tags.filter((t) => t.id === id)[0];
     if (tag) {
       console.log(tag);
-      this.$router.push("/404");
     } else {
       this.$router.replace("/404");
     }
