@@ -1,7 +1,7 @@
 <template>
   <Layout class-prefix="layout">
     <NumberPad @update:value="onUpdateAmount" @submit="saveRecord" />
-    <Types :value.sync="record.type" />
+    <Tabs :data-source="recordTypeList" :value.sync="record.type" />
     <div class="notes">
       <FormItem
         field-name="备注"
@@ -10,7 +10,7 @@
       />
     </div>
 
-    <Tags />
+    <Tags @update:value="onUpdateTags" />
   </Layout>
 </template>
 
@@ -19,11 +19,13 @@ import Vue from "vue";
 import Tags from "@/components/money/Tags.vue";
 import FormItem from "@/components/money/FormItem.vue";
 import NumberPad from "@/components/money/NumberPad.vue";
-import Types from "@/components/money/Types.vue";
+import Tabs from "@/components/Tabs.vue";
 import { Component, Watch } from "vue-property-decorator";
 
+import recordTypeList from "@/constants/recordTypeList";
+
 @Component({
-  components: { Tags, FormItem, NumberPad, Types },
+  components: { Tags, FormItem, NumberPad, Tabs },
 })
 export default class Money extends Vue {
   record: RecordItem = {
@@ -35,6 +37,8 @@ export default class Money extends Vue {
   get recordList() {
     return this.$store.state.recordList;
   }
+
+  recordTypeList = recordTypeList;
   created() {
     this.$store.commit("fetchRecords");
   }
@@ -42,6 +46,9 @@ export default class Money extends Vue {
   onUpdateNotes(value: string) {
     this.record.notes = value;
   }
+  // onUpdateTags(value: string) {
+  //   this.record.tags = value;
+  // }
 
   onUpdateAmount(value: string) {
     this.record.amount = parseFloat(value);
