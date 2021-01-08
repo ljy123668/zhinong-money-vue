@@ -80,8 +80,6 @@ export default class Statistics extends Vue {
         return -1;
       }
     });
-    console.log("array");
-    console.log(array);
 
     return array;
   }
@@ -117,8 +115,6 @@ export default class Statistics extends Vue {
   }
 
   get groupedList() {
-    console.log("切换收入支出");
-
     const { recordList } = this;
     if (recordList.length === 0) {
       return [];
