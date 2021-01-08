@@ -5,6 +5,10 @@
       :data-source="recordTypeList"
       :value.sync="type"
     />
+    <div class="chart-wrapper" ref="chartWrapper">
+      <Chart :options="chartOptions" class="chart" />
+    </div>
+
     <ol v-if="groupedList.length > 0">
       <li v-for="(group, index) in groupedList" :key="index">
         <h3 class="title">
@@ -30,13 +34,19 @@ import Tabs from "@/components/Tabs.vue";
 import recordTypeList from "@/constants/recordTypeList";
 import dayjs from "dayjs";
 import clone from "@/lib/clone";
+import Chart from "@/components/Chart.vue";
+import _ from "lodash";
 
 @Component({
-  components: { Tabs },
+  components: { Tabs, Chart },
 })
 export default class Statistics extends Vue {
   tagString(tags: Tag[]) {
     return tags.length === 0 ? "-" : tags.map((t) => t.name).join(",");
+  }
+  mounted() {
+    const div = this.$refs.chartWrapper as HTMLDivElement;
+    div.scrollLeft = div.scrollWidth;
   }
   beautify(string: string) {
     const day = dayjs(string);
@@ -53,11 +63,62 @@ export default class Statistics extends Vue {
       return day.format("YYYY年M月D日");
     }
   }
+  get keyValueList() {
+    const today = new Date();
+    const array = [];
+    for (let i = 0; i <= 29; i++) {
+      const dateString = dayjs(today).subtract(i, "day").format("YYYY-MM-DD");
+      const found = _.find(this.groupedList, { title: dateString });
+      array.push({ key: dateString, value: found ? found.total : 0 });
+    }
+    array.sort((a, b) => {
+      if (a.key > b.key) {
+        return 1;
+      } else if (a.key === b.key) {
+        return 0;
+      } else {
+        return -1;
+      }
+    });
+    console.log("array");
+    console.log(array);
+
+    return array;
+  }
+  get chartOptions() {
+    const keys = this.keyValueList.map((item) => item.key);
+    const values = this.keyValueList.map((item) => item.value);
+    return {
+      grid: {
+        left: 0,
+        right: 0,
+      },
+      xAxis: {
+        type: "category",
+
+        data: keys,
+        axisTick: { show: false },
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          symbolSize: 12,
+          data: values,
+          type: "line",
+        },
+      ],
+      tooltip: { show: true },
+    };
+  }
   get recordList() {
     return (this.$store.state as RootState).recordList;
   }
 
   get groupedList() {
+    console.log("切换收入支出");
+
     const { recordList } = this;
     if (recordList.length === 0) {
       return [];
@@ -97,6 +158,7 @@ export default class Statistics extends Vue {
         return sum + item.amount;
       }, 0);
     });
+
     return result;
   }
   beforeCreate() {
@@ -146,5 +208,14 @@ export default class Statistics extends Vue {
   margin-right: auto;
   margin-left: 16px;
   color: #999;
+}
+.chart {
+  width: 430%;
+  &-wrapper {
+    overflow: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 </style>
