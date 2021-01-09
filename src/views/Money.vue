@@ -1,7 +1,16 @@
 <template>
   <Layout class-prefix="layout">
-    <NumberPad @update:value="onUpdateAmount" @submit="saveRecord" />
-
+    <div>
+      <div class="createdAt">
+        <FormItem
+          type="date"
+          field-name="日期"
+          placeholder="请选择日期"
+          :value.sync="record.createdAt"
+        />
+      </div>
+      <NumberPad @update:value="onUpdateAmount" @submit="saveRecord" />
+    </div>
     <div class="notes">
       <FormItem
         field-name="备注"
@@ -9,16 +18,11 @@
         :value.sync="record.notes"
       />
     </div>
-    <div class="createdAt">
-      <FormItem
-        type="date"
-        field-name="日期"
-        placeholder="请选择日期"
-        :value.sync="record.createdAt"
-      />
+    <Tags @update:value="record.tags = $event" />
+    <div class="output">
+      {{ $store.state.output }}
     </div>
 
-    <Tags @update:value="record.tags = $event" />
     <Tabs :data-source="recordTypeList" :value.sync="record.type" />
   </Layout>
 </template>
@@ -49,10 +53,13 @@ export default class Money extends Vue {
   }
 
   recordTypeList = recordTypeList;
+
   created() {
     this.$store.commit("fetchRecords");
   }
-
+  updated() {
+    console.log(this.record);
+  }
   onUpdateAmount(value: string) {
     this.record.amount = parseFloat(value);
   }
@@ -70,11 +77,23 @@ export default class Money extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+@import "~@/assets/style/helper.scss";
+.output {
+  @extend %clearFix;
+  // @extend %innerShadow;
+  background-color: #fff;
+  font-size: 36px;
+  font-family: Consolas, monospace;
+  padding: 9px 24px;
+  text-align: right;
+  height: 72px;
+}
 ::v-deep .layout-content {
   display: flex;
   flex-direction: column-reverse;
 }
-.notes {
+.notes,
+.createdAt {
   padding: 12px 0;
 }
 </style>

@@ -9,6 +9,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+    output: '0.00',
     recordList: [],
     createRecordError: null,
     createTagError: null,
@@ -91,8 +92,37 @@ const store = new Vuex.Store({
     },
     saveTag(state) {
       window.localStorage.setItem('tagList', JSON.stringify(state.tagList));
-    }
+    },
+    inputContent(state, input: string) {
 
+      if (store.state.output.length === 16) {
+        return;
+      }
+      if (store.state.output === "0.00") {
+        if ("0123456789".indexOf(input) >= 0) {
+          store.state.output = input;
+        } else {
+          store.state.output += input;
+        }
+        return;
+      }
+      if (store.state.output.indexOf(".") >= 0 && input === ".") {
+        return;
+      }
+      store.state.output += input;
+    },
+    removeAmount(state) {
+      if (store.state.output.length === 1) {
+        store.state.output = "0.00";
+      } else if (store.state.output === "0.00") {
+        return
+      } else {
+        store.state.output = store.state.output.slice(0, -1);
+      }
+    },
+    clearAmount(state) {
+      store.state.output = "0.00";
+    }
   },
 
   actions: {

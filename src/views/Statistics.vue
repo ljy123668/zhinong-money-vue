@@ -204,6 +204,7 @@ export default class Statistics extends Vue {
   margin-right: auto;
   margin-left: 16px;
   color: #999;
+  font-size: 12px;
 }
 .chart {
   width: 430%;

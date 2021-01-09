@@ -1,7 +1,6 @@
 <template>
   <div>
     <label class="fromItem">
-      <span class="name">{{ this.fieldName }}</span>
       <template v-if="type === 'date'">
         <input
           :type="type || 'text'"
@@ -11,6 +10,7 @@
         />
       </template>
       <template v-else>
+        <span class="name">{{ this.fieldName }}</span>
         <input
           :type="type || 'text'"
           :value="value"
@@ -29,7 +29,7 @@ import dayjs from "dayjs";
 @Component
 export default class FormItem extends Vue {
   @Prop({ default: "" }) readonly value!: string;
-  @Prop({ required: true }) fieldName!: string;
+  @Prop() fieldName?: string;
   @Prop() placeholder?: string;
   @Prop() type?: string;
 
